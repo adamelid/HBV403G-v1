@@ -1,2 +1,5 @@
-dist/
-coverage/
+node_modules
+coverage
+dist
+.DS_Store
+*.log
