@@ -1,8 +1,9 @@
+/* eslint-disable guard-for-in */
+import { readFile } from 'fs';
 import { mkdir, writeFile } from 'fs/promises';
-import path, { join } from 'path';
-import { direxists, readFile, readFilesFromDir } from './lib/file.js';
+import { join } from 'path';
+import { direxists } from './lib/file.js';
 import { indexTemplate, statsTemplate } from './lib/html.js';
-import { parse } from './lib/parser.js';
 
 const DATA_DIR = './data';
 const OUTPUT_DIR = './dist';
@@ -12,47 +13,33 @@ async function main() {
   if (!(await direxists(OUTPUT_DIR))) {
     await mkdir(OUTPUT_DIR);
   }
-
-  const dataFiles = await readFilesFromDir(DATA_DIR);
   const results = [];
 
-  for (const file of dataFiles) {
-    // eslint-disable-next-line no-await-in-loop
-    const content = await readFile(file);
+  readFile('././data/index.json', async (err, data) => {
+    if (err) throw err;
+    const deildir = JSON.parse(data);
 
-    if (content) {
-      // CSV dót......:
-      // const númer áfanga = ...
-      // const Heiti m. hlekk = ...
-      // const ETSC einingar = ...
-      // const Kennslumisseri = ...
-      // const Námsstig = ...
-      const title = path.basename(file);
-      const numbers = parse(content);
-      const stats = numbers;
-      const filename = `${title}.html`;
+    for (const deild in deildir) {
+      for (let i = 0; i < deildir[deild].length; i+=1) {
+          const deildTitle = deildir[deild][i].title;
+          const deildDescription = deildir[deild][i].description;
+          const filename = deildir[deild][i].csv;
 
-      const result = {
-        // númer áfanga
-        // Heiti m. hlekk
-        // ETSC einingar
-        // Kennslumisseri
-        // Námsstig
-        title,
-        filename,
-        numbers,
-        stats,
-      };
-      results.push(result);
+          const result = {
+            deildTitle,
+            deildDescription,
+            filename,
+          };
+          results.push(result);
 
-      const filepath = join(OUTPUT_DIR, filename);
-      const template = statsTemplate(title, result);
+          const filepath = join(OUTPUT_DIR, filename);
+          const template = statsTemplate(deildTitle, result);
 
-      // eslint-disable-next-line no-await-in-loop
-      await writeFile(filepath, template, { flag: 'w+' });
+        // eslint-disable-next-line no-await-in-loop
+        writeFile(filepath, template, { flag: 'w+' });
+      }
     }
-  }
-
+  });
   const filepath = join(OUTPUT_DIR, 'index.html');
   const template = indexTemplate(results);
 

@@ -12,9 +12,9 @@ function template(title, content) {
 
 function statsKey(key) {
   switch (key) {
-    case 'sum':
+    case 'afanganr':
       return 'Summa';
-    case 'min':
+    case '':
       return 'Lágmarksgildi';
     case 'max':
       return 'Hámarksgildi';
@@ -70,13 +70,15 @@ export function stats(result) {
 </article>`;
 }
 
+
+
 function index(results) {
   const list = results
     .map(
       (result) => `
 <li>
-  <a href="${result.filename}">${result.title}</a>
-  <p>${result.numbers.length} tölur</p>
+  <a href="${result.filename}">${result.deildTitle}</a>
+  <p>${result.deildDescription}</p>
 </li>`
     )
     .join('\n');

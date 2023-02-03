@@ -51,7 +51,7 @@ export async function readFilesFromDir(dir) {
  * @param {object} options.encoding asdf
  * @returns {Promise<string | null>} Content of file or `null` if unable to read.
  */
-export async function readFile(file, { encoding = 'utf8' } = {}) {
+export async function readFile2(file, { encoding = 'utf8' } = {}) {
   try {
     const content = await fsReadFile(file);
     return content.toString(encoding);
